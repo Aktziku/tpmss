@@ -54,7 +54,7 @@ const Login: React.FC = () => {
            
             if (data.user) {
                
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
                 const { data: userData, error: userError } = await supabase
                     .from('users')
@@ -62,7 +62,7 @@ const Login: React.FC = () => {
                     .eq('auth_id', data.user.id)
                     .single();
 
-                console.log('User active status:', userData); // Debug log
+                console.log('User active status:', userData); 
 
                 if (userError) {
                     console.error('Error fetching user data:', userError);
@@ -247,6 +247,7 @@ const Login: React.FC = () => {
                                                 fontSize: '1.1rem',
                                                 fontWeight: '600',
                                                 marginBottom: '16px',
+                                                color: 'white',
                                             }}
                                         >
                                             Sign In

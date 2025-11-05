@@ -163,10 +163,10 @@ const HealthMonitoring: React.FC<HealthMonitoringProps> = ({ searchQuery = '' })
                 <IonGrid className="ion-padding">
                     <IonRow className="ion-margin-bottom ion-margin-top ion-align-items-center">
                         {/* Button for adding health records */}
-                        <IonCol size="12" sizeMd="6" sizeLg="4">
+                        <IonCol size="12" sizeMd="5">
                             
                             <IonButton
-                                className="ion-margin-end"
+                                
                                 onClick={() => {
                                     setShowAddModal(true);
                                     setIsEditing(false);
@@ -183,10 +183,10 @@ const HealthMonitoring: React.FC<HealthMonitoringProps> = ({ searchQuery = '' })
                             </IonButton>
                         </IonCol>
                             {/* Button for adding childrecords */}
-                        <IonCol size="12" sizeMd="6" sizeLg="4">
+                        <IonCol size="12" sizeMd="4" >
                             
                             <IonButton
-                                className="ion-margin-end"
+                                
                                 onClick={() => {
                                     setShowAddChildModal(true);
                                     setIsEditing(false);
@@ -204,10 +204,10 @@ const HealthMonitoring: React.FC<HealthMonitoringProps> = ({ searchQuery = '' })
                             </IonButton>
                         </IonCol>
                         {/* Button for adding  prenatal/postnatal */}
-                        <IonCol size="12" sizeMd="6" sizeLg="4">
+                        <IonCol size="12" sizeMd="3" >
                            
                             <IonButton
-                                className="ion-margin-end"
+                                
                                 onClick={() => {
                                     setShowAddPrenatalModal(true);
                                     setIsEditing(false);

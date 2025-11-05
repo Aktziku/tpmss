@@ -207,7 +207,7 @@ const [loading, setLoading] = useState(true);
                         <IonGrid>
                             <IonRow>
                                 <IonCol size="12" sizeMd="6">
-                                    <IonCard style={{ margin: '10px', borderRadius: '15px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                                    <IonCard style={{ margin: '10px', borderRadius: '15px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', '--background': '#ffffff' }}>
                                         <IonCardContent style={{ padding: '20px', background: '#ffffffff' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                                 <div style={{ flex: 1 }}>
@@ -239,7 +239,7 @@ const [loading, setLoading] = useState(true);
                         <IonGrid>
                             <IonRow>
                                 <IonCol>
-                                    <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px' }}>
+                                    <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px', '--background': '#ffffff' }}>
                                         <IonCardHeader>
                                             <IonSkeletonText animated style={{ width: '50%', height: '20px' }} />
                                         </IonCardHeader>
@@ -311,7 +311,7 @@ const [loading, setLoading] = useState(true);
                         <IonRow>
                             {/* Province Chart */}
                             <IonCol >
-                                <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px' }}>
+                                <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px','--background': '#ffffff' }}>
                                     <IonCardHeader>
                                         <IonCardTitle style={{ color: '#002d54' }}>
                                             Teenage Parents by Province
@@ -333,7 +333,7 @@ const [loading, setLoading] = useState(true);
                         <IonRow>
                             {/* Municipality Chart */}
                             <IonCol size="12" sizeMd="6">
-                                <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px' }}>
+                                <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px', '--background': '#ffffff' }}>
                                     <IonCardHeader>
                                         <IonCardTitle style={{ color: '#002d54' }}>
                                             Teenage Parents by Municipality
@@ -353,7 +353,7 @@ const [loading, setLoading] = useState(true);
 
                             {/* Barangay Chart */}
                             <IonCol size="12" sizeMd="6">
-                                <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px' }}>
+                                <IonCard style={{ margin: '20px 0', padding: '20px', borderRadius: '15px', '--background': '#ffffff' }}>
                                     <IonCardHeader>
                                         <IonCardTitle style={{ color: '#002d54' }}>
                                             Top 10 Barangays

@@ -311,6 +311,7 @@ const Register: React.FC = () => {
                                                         fontSize: '1.1rem',
                                                         fontWeight: '600',
                                                         marginTop: '8px',
+                                                        color: 'white',
                                                     }}
                                                 >
                                                     Create Account

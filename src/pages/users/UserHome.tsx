@@ -295,7 +295,7 @@ const UserHome: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
                 <IonContent style={{ '--background': '#f5f5f5' }}>
-                    <IonCard >
+                    <IonCard style={{ '--background': '#f5f5f5' }}>
                         <IonCardHeader>
                             <IonCardTitle style={{ color: '#002d54', display: 'flex', alignItems: 'center' }}>
                                 <IonIcon icon={personCircleOutline} style={{ marginRight: '10px', fontSize: '24px' }} />
@@ -331,7 +331,8 @@ const UserHome: React.FC = () => {
                                 disabled={isSaving}
                                 style={{
                                     '--background': '#002d54',
-                                    marginTop: '10px'
+                                    marginTop: '10px',
+                                    color: '#fff'
                                 }}
                             >
                                 <IonIcon icon={saveOutline} slot="start" />
@@ -382,7 +383,7 @@ const UserHome: React.FC = () => {
                         </IonCard>
 
                         {loading && (
-                            <IonCard>
+                            <IonCard style={{ '--background': '#ffffff' }}>
                                 <IonCardContent>
                                     <IonText color="medium">Loading your schedules...</IonText>
                                 </IonCardContent>
@@ -398,7 +399,7 @@ const UserHome: React.FC = () => {
                         )}
 
                         {!loading && !error && schedules.length === 0 && (
-                            <IonCard>
+                            <IonCard style={{ '--background': '#ffffff' }}>
                                 <IonCardContent>
                                     <IonText color="medium">
                                         <p style={{ textAlign: 'center', padding: '20px' }}>
@@ -414,7 +415,7 @@ const UserHome: React.FC = () => {
                                 {schedules.map((schedule) => (
                                     <IonRow key={schedule.visitid}>
                                         <IonCol size="12">
-                                            <IonCard style={{ borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                                            <IonCard style={{ borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', '--background': '#ffffff' }}>
                                                 <IonCardHeader>
                                                     <IonCardTitle style={{ color: '#002d54', fontSize: '1.1rem' }}>
                                                         {schedule.profile ? 
