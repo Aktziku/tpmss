@@ -1,5 +1,5 @@
 import { IonAlert, IonButton, IonCard, IonCardContent, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonInput, IonInputPasswordToggle, IonPage, IonRow, IonText, IonTitle, IonToast, IonToolbar, useIonLoading, useIonRouter } from '@ionic/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { logIn, logoGoogle, mailOutline, lockClosedOutline } from 'ionicons/icons';
 import { supabase } from '../utils/supabaseClients';
 
@@ -21,31 +21,42 @@ const Alertbox: React.FC<{
 
 const Login: React.FC = () => {
     const router = useIonRouter();
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('')
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('')
 
     const [present, dismiss] = useIonLoading();
-    const [showAlert, setShowAlert] = React.useState(false);
-    const [showToast, setShowToast] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     //Function to handle email and password login
-    const doLogin = async () => {
-       
+    const doLogin = async () => {   
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const trimmedEmail = (email || '').trim();
+        const trimmedPassword = (password || '').trim();
+
+        if (!trimmedEmail || !trimmedPassword) {
+        setErrorMessage("Please enter both email and password");
+        setShowAlert(true);
+        return;
+        }
+        
         if (isLoading) return;
         
         setIsLoading(true);
-        await present('Signing in...');
         
         try {
-           
+           await present('Signing in...');
+           setErrorMessage('');
             const { data, error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+                email: trimmedEmail,
+                password: trimmedPassword,
             });
 
             if (error) {
+                console.error('Authentication error:', error);
                 setErrorMessage("Login failed: " + error.message);
                 setShowAlert(true);
                 return;
@@ -53,8 +64,6 @@ const Login: React.FC = () => {
 
            
             if (data.user) {
-               
-                await new Promise(resolve => setTimeout(resolve, 500));
                 
                 const { data: userData, error: userError } = await supabase
                     .from('users')
@@ -103,7 +112,7 @@ const Login: React.FC = () => {
             setShowAlert(true);
         } finally {
             setIsLoading(false);
-            dismiss();
+            await dismiss();
         }
     };
 
@@ -194,7 +203,14 @@ const Login: React.FC = () => {
                                         <div style={{ marginBottom: '20px' }}>
                                             <IonInput
                                                 value={email}
-                                                onIonChange={(e) => setEmail(e.detail.value!)}
+                                                onIonChange={(e) => {
+                                                    const value = e.detail.value || '';
+                                                    setEmail(value);
+                                                }}
+                                                onIonInput={(e) => {
+                                                    const value = String((e.target as HTMLIonInputElement).value || '');
+                                                    setEmail(value);
+                                                }}
                                                 fill="outline"
                                                 type="email"
                                                 label="Email"
@@ -215,7 +231,15 @@ const Login: React.FC = () => {
                                         <div style={{ marginBottom: '24px' }}>
                                             <IonInput
                                                 value={password}
-                                                onIonChange={(e) => setPassword(e.detail.value!)}
+                                                onIonChange={(e) => {
+                                                    const value = e.detail.value || '';
+                                                   
+                                                    setPassword(value);
+                                                }}
+                                                onIonInput={(e) => {
+                                                    const value = String((e.target as HTMLIonInputElement).value || '');
+                                                    setPassword(value);
+                                                }}
                                                 fill="outline"
                                                 type="password"
                                                 label="Password"
