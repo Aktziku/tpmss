@@ -144,6 +144,7 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
               
               
               setIsIndigenous(profile.indigenous_ethnicity ? 'Yes' : 'No');
+               setIsMultiplePartners(profile.multiple_partner_num ? 'Yes' : 'No');
               // Set location dropdowns
               if (profile.region) {
                 //console.log('Finding region:', profile.region);
@@ -327,6 +328,7 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
    
       setIsIndigenous('');
       setIsPartnerIndigenous('');
+      setIsMultiplePartners('');
       setError(null);
    };
    
@@ -1325,7 +1327,7 @@ const handleMunicipalityChange = (municipalityCode: string) => {
                             labelPlacement="floating"
                             fill="outline"
                             style={{ "--color": "#000" }}
-                            value={partnersData.multiple_partner_num}
+                            value={profileData.multiple_partner_num}
                             onIonChange={(e) =>
                               handleChange("multiple_partner_num", e.detail.value!)
                             }
