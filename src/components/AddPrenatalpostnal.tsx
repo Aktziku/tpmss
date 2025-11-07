@@ -33,9 +33,9 @@ const emptyForm: FormState = {
     health_id: null,
     healthSearch: '',
     week_of_pregnancy: '',
-    prenatal_visit_num: 0,
+    prenatal_visit_num: 1,
     prenatal_visit_date: '',
-    postnatal_visit_num: 0,
+    postnatal_visit_num: 1,
     postnatal_visit_date: '',
     care_compliance: '',
     prenatal_next_sched: '',
@@ -62,6 +62,13 @@ const AddPrenatalPostnatal: React.FC<AddPrenatalPostnatalProps> = ({ isOpen, onC
         setVisitType('prenatal');
         void loadHealthRecords();
     }, [isOpen]);
+
+    // Update visit numbers when visit type changes or health record is selected
+    useEffect(() => {
+        if (form.health_id && visitType) {
+            updateVisitNumber();
+        }
+    }, [visitType, form.health_id]);
 
     const handleHealthSearch = (searchValue: string) => {
         setForm((prevForm) => ({
@@ -153,6 +160,17 @@ const AddPrenatalPostnatal: React.FC<AddPrenatalPostnatalProps> = ({ isOpen, onC
         }
     };
 
+    const updateVisitNumber = async () => {
+        if (!form.health_id) return;
+
+        const nextVisitNum = await fetchNextVisitNumber(form.health_id, visitType);
+        
+        setForm(prevForm => ({
+            ...prevForm,
+            [visitType === 'prenatal' ? 'prenatal_visit_num' : 'postnatal_visit_num']: nextVisitNum
+        }));
+    };
+
     const handleHealthSelect = async (record: HealthRecordOption) => {
         setError(null);
         setShowSuggestions(false);
@@ -193,18 +211,21 @@ const AddPrenatalPostnatal: React.FC<AddPrenatalPostnatalProps> = ({ isOpen, onC
         const randomSuffix = Math.floor(1000 + Math.random() * 9000);
         const newVisitId = parseInt(`${yearPrefix}${randomSuffix}`);
 
+        // Only include the relevant visit data based on visit type
         const payload = {
             visitid: newVisitId,
             health_id: form.health_id,
-            week_of_pregnancy: form.week_of_pregnancy || null,
-            prenatal_visit_num: form.prenatal_visit_num || 0,
-            prenatal_visit_date: form.prenatal_visit_date || null,
-            postnatal_visit_num: form.postnatal_visit_num || 0,
-            postnatal_visit_date: form.postnatal_visit_date || null,
+            week_of_pregnancy: visitType === 'prenatal' ? (form.week_of_pregnancy || null) : null,
+            prenatal_visit_num: visitType === 'prenatal' ? form.prenatal_visit_num : null,
+            prenatal_visit_date: visitType === 'prenatal' ? (form.prenatal_visit_date || null) : null,
+            prenatal_next_sched: visitType === 'prenatal' ? (form.prenatal_next_sched || null) : null,
+            postnatal_visit_num: visitType === 'postnatal' ? form.postnatal_visit_num : null,
+            postnatal_visit_date: visitType === 'postnatal' ? (form.postnatal_visit_date || null) : null,
+            postnatal_next_sched: visitType === 'postnatal' ? (form.postnatal_next_sched || null) : null,
             care_compliance: form.care_compliance || null,
-            prenatal_next_sched: form.prenatal_next_sched || null,
-            postnatal_next_sched: form.postnatal_next_sched || null,
         };
+
+        
 
         const { error } = await supabase
             .from('PrenatalPostnatalVisit')
