@@ -242,7 +242,7 @@ const Reports: React.FC = () => {
             <IonGrid style={{ padding: 0 }}>
               <IonRow>
                 <IonCol size="12" sizeMd="6" sizeLg="3">
-                  <IonCard style={{ background: '#3498db', color: 'white', margin: '8px 0', minHeight: '140px' }}>
+                  <IonCard style={{ background: '#388087', color: 'white', margin: '8px 0', minHeight: '140px' }}>
                     <IonCardHeader>
                       <IonCardTitle style={{ fontSize: '16px', display: 'flex', alignItems: 'center' }}>
                         <IonIcon icon={peopleOutline} style={{ fontSize: '24px', marginRight: '8px' }} />
@@ -257,7 +257,7 @@ const Reports: React.FC = () => {
                 </IonCol>
 
                 <IonCol size="12" sizeMd="6" sizeLg="3">
-                  <IonCard style={{ background: '#2980b9', color: 'white', margin: '8px 0', minHeight: '140px' }}>
+                  <IonCard style={{ background: '#6fb3b8', color: 'white', margin: '8px 0', minHeight: '140px' }}>
                     <IonCardHeader>
                       <IonCardTitle style={{ fontSize: '16px', display: 'flex', alignItems: 'center' }}>
                         <IonIcon icon={medkitOutline} style={{ fontSize: '24px', marginRight: '8px' }} />
@@ -272,7 +272,7 @@ const Reports: React.FC = () => {
                 </IonCol>
 
                 <IonCol size="12" sizeMd="6" sizeLg="3">
-                  <IonCard style={{ background: '#5dade2', color: 'white', margin: '8px 0', minHeight: '140px' }}>
+                  <IonCard style={{ background: '#badfe7', color: 'white', margin: '8px 0', minHeight: '140px' }}>
                     <IonCardHeader>
                       <IonCardTitle style={{ fontSize: '16px', display: 'flex', alignItems: 'center' }}>
                         <IonIcon icon={schoolOutline} style={{ fontSize: '24px', marginRight: '8px' }} />
@@ -287,7 +287,7 @@ const Reports: React.FC = () => {
                 </IonCol>
 
                 <IonCol size="12" sizeMd="6" sizeLg="3">
-                  <IonCard style={{ background: '#498cb9ff', color: 'white', margin: '8px 0', minHeight: '140px' }}>
+                  <IonCard style={{ background: '#c2edce', color: 'white', margin: '8px 0', minHeight: '140px' }}>
                     <IonCardHeader>
                       <IonCardTitle style={{ fontSize: '16px', display: 'flex', alignItems: 'center' }}>
                         <IonIcon icon={briefcaseOutline} style={{ fontSize: '24px', marginRight: '8px' }} />
