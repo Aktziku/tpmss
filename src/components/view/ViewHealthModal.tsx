@@ -24,6 +24,9 @@ interface ChildRecord {
     onuemoccal_conjucate: boolean;
     Measssles_rubella: boolean;
     type_of_delivery: string;
+    complications: string;
+    status: string;
+    gender: string;
 }
 
 interface VisitRecord {
@@ -519,7 +522,76 @@ const ViewHealthModal: React.FC<ViewHealthModalProps> = ({ isOpen, onClose, heal
                                                                 <strong>Type of Delivery:</strong> {child.type_of_delivery || 'N/A'}
                                                             </IonLabel>
                                                         </IonCol>
+
+                                                        <IonCol size="12" sizeMd="6">
+                                                            <IonLabel>
+                                                                <strong>Gender:</strong> {child.gender || 'N/A'}
+                                                            </IonLabel>
+                                                        </IonCol>
                                                     </IonRow>
+
+                                                    {/* CHILD STATUS AND COMPLICATIONS */}
+                                                    <IonRow style={{ marginTop: '10px' }}>
+                                                        <IonCol size="12">
+                                                            <IonLabel>
+                                                                <strong>Health Status:</strong>{' '}
+                                                                <IonBadge 
+                                                                    color={child.status === 'Normal' ? 'success' : child.status === 'With Health Complications' ? 'warning' : 'medium'}
+                                                                    style={{ 
+                                                                        padding: '6px 12px',
+                                                                        fontSize: '0.9rem',
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                >
+                                                                    {child.status || 'N/A'}
+                                                                </IonBadge>
+                                                            </IonLabel>
+                                                        </IonCol>
+                                                    </IonRow>
+
+                                                    {/* Show complications if status is "With Health Complications" */}
+                                                    {child.status === 'With Health Complications' && (
+                                                        <IonRow style={{ marginTop: '10px' }}>
+                                                            <IonCol size="12">
+                                                                <div style={{ 
+                                                                    padding: '12px', 
+                                                                    backgroundColor: '#fff3cd', 
+                                                                    border: '1px solid #ffeaa7', 
+                                                                    borderRadius: '8px',
+                                                                    borderLeft: '4px solid #856404'
+                                                                }}>
+                                                                    <IonLabel style={{ whiteSpace: 'normal' }}>
+                                                                        <strong style={{ color: '#4b3c10ff' }}>Health Complications:</strong>
+                                                                        <div style={{ marginTop: '5px', color: '#856404' }}>
+                                                                            {child.complications || 'No specific complications recorded'}
+                                                                        </div>
+                                                                    </IonLabel>
+                                                                </div>
+                                                            </IonCol>
+                                                        </IonRow>
+                                                    )}
+
+                                                    {/* Show normal status message if status is "Normal" */}
+                                                    {child.status === 'Normal' && (
+                                                        <IonRow style={{ marginTop: '10px' }}>
+                                                            <IonCol size="12">
+                                                                <div style={{ 
+                                                                    padding: '12px', 
+                                                                    backgroundColor: '#d1f2eb', 
+                                                                    border: '1px solid #a3e4d7', 
+                                                                    borderRadius: '8px',
+                                                                    borderLeft: '4px solid #00b894'
+                                                                }}>
+                                                                    <IonLabel>
+                                                                        <strong style={{ color: '#00b894' }}>✓ Normal Health Status</strong>
+                                                                        <div style={{ marginTop: '5px', color: '#0c5460' }}>
+                                                                            Child is in good health with no complications reported.
+                                                                        </div>
+                                                                    </IonLabel>
+                                                                </div>
+                                                            </IonCol>
+                                                        </IonRow>
+                                                    )}
 
                                                     <h4 style={{ marginTop: '15px', color: '#002d54', fontSize: '1rem' }}>Vital Measurements</h4>
                                                     <IonRow>

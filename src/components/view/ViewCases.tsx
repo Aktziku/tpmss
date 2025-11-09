@@ -1,7 +1,7 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonHeader, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonModal, IonPage, IonRow, IonSpinner, IonText, IonTitle, IonToolbar, IonBadge } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../utils/supabaseClients';
-import { personOutline, documentTextOutline, calendarOutline, heartOutline, peopleOutline, chatbubblesOutline } from 'ionicons/icons';
+import { personOutline, documentTextOutline, calendarOutline, heartOutline, peopleOutline, chatbubblesOutline, handLeftOutline } from 'ionicons/icons';
 
 interface ViewCasesProps {
     isOpen: boolean;
@@ -21,6 +21,13 @@ interface CaseData {
     family_support_frequency: string;
     received_GC: string;
     received_FS: string;
+    received_SS: string;
+    social_support_type: string;
+    social_sup_received_from: string;
+    social_sup_frequency: string;
+    received_PS: string;
+    partner_support_type: string;
+    partner_support_frequency: string;
 }
 
 interface ProfileData {
@@ -217,7 +224,7 @@ const ViewCases: React.FC<ViewCasesProps> = ({ isOpen, onClose, caseId }) => {
                         <IonCard style={{ marginBottom: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                             <IonCardContent>
                                 <h2 style={{ color: "black", fontWeight: "bold", backgroundColor: '#fff', padding: '10px', fontSize: '1.5rem', borderBottom: '2px solid #002d54' }}>
-                                    Guidance Counseling
+                                    Guidance and Counseling
                                 </h2>
                                 <IonGrid>
                                     {/* Received GC with Badge */}
@@ -298,6 +305,95 @@ const ViewCases: React.FC<ViewCasesProps> = ({ isOpen, onClose, caseId }) => {
                                 </IonGrid>
                             </IonCardContent>
                         </IonCard>
+
+                        {/* Partner Support Card */}
+                        <IonCard style={{ marginBottom: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                            <IonCardContent>
+                                <h2 style={{ color: "black", fontWeight: "bold", backgroundColor: '#fff', padding: '10px', fontSize: '1.5rem', borderBottom: '2px solid #002d54' }}>
+                                    Partner Support
+                                </h2>
+                                <IonGrid>
+                                    {/* Received PS with Badge */}
+                                    <IonRow className="ion-align-items-center" style={{ padding: '8px 0', borderBottom: '1px solid #e0e0e0' }}>
+                                        <IonCol size="12" sizeMd="4">
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <IonIcon icon={handLeftOutline} style={{ color: '#002d54', fontSize: '18px' }} />
+                                                <IonText style={{ fontWeight: 'bold', color: '#555' }}>Received Support?</IonText>
+                                            </div>
+                                        </IonCol>
+                                        <IonCol size="12" sizeMd="8">
+                                            <IonBadge color={getReceivedColor(caseData.received_PS)} style={{ fontSize: '14px', padding: '8px 16px' }}>
+                                                {caseData.received_PS || 'N/A'}
+                                            </IonBadge>
+                                        </IonCol>
+                                    </IonRow>
+
+                                    {caseData.received_PS?.toLowerCase() === 'yes' && (
+                                        <>
+                                            <InfoRow 
+                                                label="Type of Support" 
+                                                value={caseData.partner_support_type}
+                                            />
+                                            <InfoRow 
+                                                label="Frequency" 
+                                                value={caseData.partner_support_frequency}
+                                                icon={calendarOutline}
+                                            />
+                                        </>
+                                    )}
+                                </IonGrid>
+                            </IonCardContent>
+                        </IonCard>
+
+                        {/* Support Services Summary */}
+                        <IonCard style={{ marginTop: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                            <IonCardContent>
+                                <h3 style={{ color: '#002d54', marginBottom: '15px', textAlign: 'center' }}>
+                                    Support Services Summary
+                                </h3>
+                                <IonGrid>
+                                    <IonRow style={{ textAlign: 'center' }}>
+                                        <IonCol size="6" sizeMd="3">
+                                            <IonBadge 
+                                                color={getReceivedColor(caseData.received_GC)} 
+                                                style={{ display: 'block', padding: '8px', marginBottom: '5px' }}
+                                            >
+                                                Guidance Counseling
+                                            </IonBadge>
+                                            <div style={{ fontSize: '12px', color: '#666' }}>{caseData.received_GC || 'N/A'}</div>
+                                        </IonCol>
+                                        <IonCol size="6" sizeMd="3">
+                                            <IonBadge 
+                                                color={getReceivedColor(caseData.received_FS)} 
+                                                style={{ display: 'block', padding: '8px', marginBottom: '5px' }}
+                                            >
+                                                Family Support
+                                            </IonBadge>
+                                            <div style={{ fontSize: '12px', color: '#666' }}>{caseData.received_FS || 'N/A'}</div>
+                                        </IonCol>
+                                        <IonCol size="6" sizeMd="3">
+                                            <IonBadge 
+                                                color={getReceivedColor(caseData.received_SS)} 
+                                                style={{ display: 'block', padding: '8px', marginBottom: '5px' }}
+                                            >
+                                                Social Support
+                                            </IonBadge>
+                                            <div style={{ fontSize: '12px', color: '#666' }}>{caseData.received_SS || 'N/A'}</div>
+                                        </IonCol>
+                                        <IonCol size="6" sizeMd="3">
+                                            <IonBadge 
+                                                color={getReceivedColor(caseData.received_PS)} 
+                                                style={{ display: 'block', padding: '8px', marginBottom: '5px' }}
+                                            >
+                                                Partner Support
+                                            </IonBadge>
+                                            <div style={{ fontSize: '12px', color: '#666' }}>{caseData.received_PS || 'N/A'}</div>
+                                        </IonCol>
+                                    </IonRow>
+                                </IonGrid>
+                            </IonCardContent>
+                        </IonCard>
+                    
 
                         {/* Alert Cards based on received services */}
                         {caseData.received_GC?.toLowerCase() === 'no' && caseData.received_FS?.toLowerCase() === 'no' && (

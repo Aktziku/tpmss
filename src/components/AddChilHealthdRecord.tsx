@@ -415,7 +415,7 @@ const AddChildHealthRecord: React.FC<AddChildHealthRecordProps> = ({ isOpen, onC
 
                                 <IonRow>
                                     <IonCol size="12" size-md="6">
-                                        <IonLabel style={{ fontWeight: 'bold', color: '#000',marginLeft:'10px' }}>Status</IonLabel>
+                                        <IonLabel style={{ fontWeight: 'bold', color: '#000',marginLeft:'10px' }}>Child Status</IonLabel>
                                         <IonItem lines="none" style={{ '--background': '#fff' }}>
                                             
                                             <IonSelect
