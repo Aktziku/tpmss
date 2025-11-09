@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import {IonContent,IonPage,IonCard,IonCardHeader,IonCardTitle,IonCardContent,IonButton,IonGrid,IonRow,IonCol,IonIcon,IonToast,IonSpinner,IonProgressBar,useIonViewWillEnter,IonSkeletonText,} from '@ionic/react';
-import {documentTextOutline,peopleOutline,medkitOutline,schoolOutline,briefcaseOutline,downloadOutline,statsChartOutline,} from 'ionicons/icons';
-import { fetchStatistics, generateCasesReport, generateEducationReport, generateHealthReport, generateLocationBreakdownReport, generateProfilesReport, generateSummaryReport, getLocationFilterText, loadAvailableLocations, LocationFilter } from '../../../services/reportServices';
-import { EarlyWarningCase, fetchEarlyWarnings, generateEarlyWarningReport, WarningStats } from '../../../services/earlyWarning';
+import {documentTextOutline,peopleOutline,medkitOutline,schoolOutline,briefcaseOutline,downloadOutline,statsChartOutline, heart, heartOutline} from 'ionicons/icons';
+import { fetchStatistics, generateCasesReport, generateChildrenReport, generateEducationReport, generateHealthReport, generateLocationBreakdownReport, generateProfilesReport, generateSummaryReport, getLocationFilterText, loadAvailableLocations, LocationFilter } from '../../../services/reportServices';
+import {  EarlyWarningCase, fetchEarlyWarnings, generateEarlyWarningReport, WarningStats } from '../../../services/earlyWarning';
 import EarlyWarningDashboard from '../../../components/EarlyWarningDashboard';
 import LocationFilterCard from '../../../components/LocationFilterCard';
 
@@ -153,6 +153,11 @@ const Reports: React.FC = () => {
 
         case 'cases':
           await generateCasesReport(locationFilter, locationText);
+          await progressPromise;
+          break;
+
+        case 'children':
+          await generateChildrenReport(locationFilter, locationText);
           await progressPromise;
           break;
 
@@ -488,8 +493,38 @@ const Reports: React.FC = () => {
                 </IonCardContent>
               </IonCard>
             </IonCol>
+
+            <IonCol size="12" sizeMd="6" sizeLg="4">
+              <IonCard style={{ margin: '8px 0', minHeight: '200px', }}>
+                <IonCardHeader>
+                  <IonCardTitle style={{ fontSize: '16px', display: 'flex', alignItems: 'center' }}>
+                    <IonIcon icon={heartOutline} style={{ marginRight: '8px', fontSize: '20px', }} />
+                    Children Report
+                  </IonCardTitle>
+                </IonCardHeader>
+                <IonCardContent>
+                  <p style={{ fontSize: '14px', minHeight: '60px' }}>Export children health records including birth details, growth tracking, and immunizations.</p>
+                  <IonButton
+                    expand="block"
+                    onClick={() => handleGenerateReport('children')}
+                    disabled={loading}
+                    style={{ marginTop: '10px' }}
+                  >
+                    {loading && reportType === 'children' ? (
+                      <IonSpinner name="crescent" />
+                    ) : (
+                      <>
+                        <IonIcon slot="start" icon={downloadOutline} />
+                        Download PDF
+                      </>
+                    )}
+                  </IonButton>
+                </IonCardContent>
+              </IonCard>
+            </IonCol>
           </IonRow>
         </IonGrid>
+
 
         <IonToast
           isOpen={showToast}
