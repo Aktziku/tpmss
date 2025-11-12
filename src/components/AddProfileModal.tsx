@@ -14,6 +14,15 @@ interface AddProfileModalProps {
     isEditing?: boolean;
 }
 
+interface ValidationErrors {
+    [key: string]: boolean;
+}
+
+interface RequiredFields {
+  profile: string[];
+  partner: string[];
+}
+
 const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSave, editingProfile = null, isEditing: isEditingProp = false }) => {
    const [isEditing, setIsEditing] = useState(false);
    const [loading, setLoading] = useState(false);
@@ -46,7 +55,7 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
         teenage_income: '',
         teenage_occupation: '',
         type_of_school: '',
-        multiple_partner_num: '',
+        multiple_partner_num: 0,
    });
 
    const [partnersData, setPartnersData] = useState<any>({
@@ -139,7 +148,7 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
                   teenage_income: profile.teenage_income || '',
                   teenage_occupation: profile.teenage_occupation || '',
                   type_of_school: profile.type_of_school || '',
-                  multiple_partner_num: profile.multiple_partner_num || '',
+                  multiple_partner_num: profile.multiple_partner_num || 0,
               });
               
               
@@ -214,7 +223,7 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
                   fathers_income: partner.fathers_income || '',
                   mothers_income: partner.mothers_income || '',
                   indigenous_ethnicity: partner.indigenous_ethnicity || '',
-                  type_of_school: partner.type_of_school || '',
+                  type_of_school: partner.type_of_school || 0,
               });
 
               setIsPartnerIndigenous(partner.indigenous_ethnicity ? 'Yes' : 'No');
@@ -288,7 +297,7 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
           teenage_income: '',
           teenage_occupation: '',
           type_of_school: '',
-          multiple_partner_num: '',
+          multiple_partner_num: 0,
        });
 
        setPartnersData({
@@ -335,9 +344,23 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
   // Function to save profile data to Supabase
   const handleSave = async () => {
     try {
-      setLoading(true);
+      setIsValidating(true);
       setError(null);
-      
+
+      const { isValid, firstErrorField } = validateAllFields();
+      if (!isValid) {
+        setError('Please Fill up all required fields.');
+        
+
+        if (firstErrorField) {
+          setTimeout(() => {
+            scrollField(firstErrorField);
+          }, 100);
+        }
+      return;
+      }
+
+      setLoading(true);
       // Get user ID from current session
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -407,7 +430,7 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
         mothers_income: profileData.mothers_income || '',
         fathers_income: profileData.fathers_income || '',
         type_of_school: profileData.type_of_school || '',
-        multiple_partner_num: profileData.multiple_partner_num || '',
+        multiple_partner_num: profileData.multiple_partner_num || 0,
       };
 
       const partnersPayload = {
@@ -510,11 +533,12 @@ const AddProfileModal: React.FC<AddProfileModalProps> = ({ isOpen, onClose, onSa
       }
     } finally {
       setLoading(false);
+      setIsValidating(false);
     }
   };
 
   const handleChange = (field: string, value: string | number | boolean) => {
-    // Map field names to match the database column names
+    // Map field names
     const fieldNameMapping: Record<string, string> = {
       firstName: "firstName", 
       lastName: "lastName",
@@ -656,6 +680,92 @@ const handleMunicipalityChange = (municipalityCode: string) => {
     handleChange("pMunicipality", selectedMunicipality?.name || municipalityCode);
   };
 
+  const [validationError, setValidationError] = useState<ValidationErrors>({});
+  const [isValidating, setIsValidating] = useState(false);
+  
+
+  const requiredFields: RequiredFields = {
+    profile: [ 'firstName', 'lastName', 'birthdate', 'contactnum', 'region', 'province', 'municipality', 'barangay', 'zipcode', 'marital_status', 'religion', 'living_with', 'current_year_level', 'highest_educational_attainment', 'fathers_occupation', 'mothers_occupation', 'fathers_income', 'mothers_income', 'type_of_school' ],
+    partner: [  'pFirstname', 'pLastname', 'pAge', 'pBirthdate']
+  };
+
+  const fieldRefs = useRef<{ [key: string]: HTMLIonInputElement | HTMLIonSelectElement | null}>({});
+  const containerRef = useRef<HTMLIonContentElement>(null);
+
+  const validateFields = (fieldName: string, value: any, fieldType: 'profile' | 'partner'): boolean => {
+    if (!requiredFields[fieldType].includes (fieldName)) {
+      return true;
+    }
+
+    if (typeof value === 'string') {
+      return value.trim() !== '';
+    }
+
+    if (typeof value === 'number') {
+      return value > 0;
+    }
+
+    return value !== null && value !== '' && value !== undefined;
+  };
+
+  const validateAllFields = (): {isValid: boolean; firstErrorField: string | null} => {
+    const errors: ValidationErrors = {};
+    let firstErrorField: string | null = null;
+
+    requiredFields.profile.forEach(field => {
+      const isValid = validateFields(field, profileData[field],'profile');
+      if (!isValid) {
+        errors[field] = true;
+        if(!firstErrorField) {firstErrorField = field};
+      }
+    });
+
+    requiredFields.partner.forEach(field => {
+      const isValid = validateFields(field, partnersData[field], 'partner');
+      if (!isValid) {
+        errors[field] = true;
+        if(!firstErrorField) {firstErrorField = field};
+      }
+    });
+
+    setValidationError(errors);
+    return { isValid: Object.keys(errors).length === 0, firstErrorField };
+  };
+  const clearFieldError = (fieldName: string) => {
+    if (validationError[fieldName]) {
+      setValidationError(prev => {
+        const updated = { ...prev };
+        delete updated[fieldName];
+        return updated;
+      });
+    }
+  };
+  
+  const scrollField = (fieldName: string) => {
+    const fieldRef = fieldRefs.current[fieldName];
+
+    if (fieldRef && containerRef.current) {
+      const fieldElement = fieldRef.closest('.ion-margin') || fieldRef;
+
+      if (fieldElement) {
+        const container = containerRef.current;
+        const containerRect = container.getBoundingClientRect();
+        const fieldRect = fieldElement.getBoundingClientRect();
+
+        const offset = fieldRect.top - containerRect.top + container.scrollTop ;
+        
+        container.scrollToPoint(0, offset - 100, 500); 
+
+        setTimeout(() => {
+          if (fieldRef.focus) {
+            fieldRef.focus();
+          }
+        } , 600);
+      }
+    }
+  };
+
+
   const Occupations = [
       "Managers", "Professionals", "Technicians and Associate Professionals", "Clerical Support Workers", "Service Workers",
       "Skilled Agricultural, Forestry and Fishery Workers", "Craft and Related Trades Workers", "Plant and Machine Operators and Assemblers",
@@ -733,6 +843,7 @@ const handleMunicipalityChange = (municipalityCode: string) => {
                             fill="outline"
                             style={{ "--color": "#000" }}
                             value={profileData.firstName}
+                            required
                             onIonChange={(e) =>
                                 handleChange("firstName", e.detail.value!)
                             }
@@ -748,6 +859,7 @@ const handleMunicipalityChange = (municipalityCode: string) => {
                             labelPlacement="floating"
                             fill="outline"
                             style={{ "--color": "#000" }}
+                            required
                             value={profileData.lastName}
                             onIonChange={(e) =>
                                 handleChange("lastName", e.detail.value!)
@@ -1328,7 +1440,7 @@ const handleMunicipalityChange = (municipalityCode: string) => {
                           <IonInput
                             className='ion-margin'
                             label="Partners Have Been with Since First Pregnancy"
-                            type="text"
+                            type="number"
                             labelPlacement="floating"
                             fill="outline"
                             style={{ "--color": "#000" }}

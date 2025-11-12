@@ -77,7 +77,7 @@ const [loading, setLoading] = useState(true);
             const { count: enrolledCount} = await supabase
                 .from('EducationAndTraining')
                 .select('*', { count: 'exact', head: true })
-                .eq('status', 'Enrolled');
+                .in('status', ['Enrolled', 'Re-enrolled']);
 
             const {data: profile} = await supabase
                 .from('profile')

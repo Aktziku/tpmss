@@ -770,7 +770,7 @@ const AddHealthRecord: React.FC<AddHealthRecordProps> = ({ isOpen, onClose, onSa
                                     </div>
                                 ))}
 
-                                {/* Show message when no vaccinations */}
+                                {/*  no vaccinations */}
                                 {form.vaccinations.length === 0 && (
                                     <IonRow>
                                         <IonCol>

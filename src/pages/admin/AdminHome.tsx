@@ -139,7 +139,7 @@ const AdminHome: React.FC = () => {
             if (data && data.length > 0) {
                 setUserDetails({role:data[0].role})
             } else {
-                 console.log("No role found for auth_id:", id);
+                 //console.log("No role found for auth_id:", id);
                  setUserDetails({ role: '' });
             }
         }

@@ -286,7 +286,7 @@ export const generateSummaryReport = async (statistics: any, locationText: strin
 
         const columns = ['Name', 'Age', 'Civil Status', 'Address', 'Contact', 'Indigenous', 'Children Count'];
         const rows = await Promise.all(profiles.map(async (p) => {
-            // Get children count for each profile
+            // Get children count 
             const { data: healthRecords } = await supabase
                 .from('maternalhealthRecord')
                 .select('health_id')

@@ -21,7 +21,7 @@ interface ProfileData {
   mothers_income: string;
   type_of_school: string;
   indigenous_ethnicity: string;
-  multiple_partner_num: string;
+  multiple_partner_num:  number;
 
   // Address info
   barangay: string;

@@ -161,7 +161,7 @@ const Login: React.FC = () => {
                         console.log('User has not agreed to privacy policy, showing modal');
                         setPendingUser(data.user);
                         setShowPrivacyModal(true);
-                        return; // Don't continue login flow
+                        return; 
                     }
 
                     const userRole = userData.role;
