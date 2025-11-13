@@ -50,39 +50,44 @@ const AuthCallback: React.FC = () => {
       // Check if existing account is deactivated
       if (existingAccount && existingAccount.active === false) {
         setErrorMessage("Your account has been deactivated. Please contact an administrator.");
-        // Sign out the user
+        
         await supabase.auth.signOut();
-        // Redirect to login after a delay to show the error
+        
         setTimeout(() => {
           router.push("/", "root", "replace");
         }, 3000);
         return;
       }
 
-      // Insert only if new (new users are active by default)
+      let userRole = existingAccount?.role;
+
+      // Insert only if new (new users are active by default with 'user' role)
       if (!existingAccount) {
-        const { error: insertError } = await supabase.from("users").insert([
-          {
-            username:
-              user.user_metadata?.full_name ||
-              user.email?.split("@")[0] ||
-              "New User",
-            email: user.email,
-            role: "user",
-            auth_id: user.id,
-            active: true, 
-            privacy_agreement: true,
-            privacy_agreed_at: new Date().toISOString()
-          },
-        ]);
+        const newUserData = {
+          username:
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "New User",
+          email: user.email,
+          role: "teenager", 
+          auth_id: user.id,
+          active: true, 
+          privacy_agreement: true,
+          privacy_agreed_at: new Date().toISOString()
+        };
+
+        const { error: insertError } = await supabase.from("users").insert([newUserData]);
 
         if (insertError) {
           console.error("Insert error:", insertError.message);
           router.push("/", "root", "replace");
           return;
         }
+
+        userRole = "teenager"; 
       } else {
-          if (!existingAccount.privacy_agreement) {
+        
+        if (!existingAccount.privacy_agreement) {
           const { error: updatePrivacyError } = await supabase
             .from("users")
             .update({ 
@@ -97,14 +102,24 @@ const AuthCallback: React.FC = () => {
         }
       }
 
-      // Fetch role again safely
-      const { data: accountWithRole } = await supabase
-        .from("users")
-        .select("role")
-        .eq("email", user.email)
-        .maybeSingle();
+      
+      const adminRoles = ['admin', 'healthworker', 'socialworker', 'school'];
+      const userRoles = [ 'teenager']; 
 
-      router.push("/admin", "root", "replace");
+      if (adminRoles.includes(userRole)) {
+        
+        router.push("/admin", "root", "replace");
+      } else if (userRoles.includes(userRole)) {
+        
+        router.push("/home", "root", "replace");
+      } else {
+        
+        if (userRole === 'teenage') {
+          router.push("/home", "root", "replace");
+        } else {
+          router.push("/admin", "root", "replace");
+        }
+      }
     };
 
     handleOAuth();
