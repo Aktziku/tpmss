@@ -62,65 +62,102 @@ const Register: React.FC = () => {
     };
     {/*function to handle account creation*/}
     const handleSignup = async () => {
-        setShowVerifycationModal(false);
-        try {
+    setShowVerifycationModal(false);
+    let authData: any = null;
+    try {
+    
+    const { data, error: authError } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+            data: {
+                username,
+                userfirstName: FirstName,
+                userlastName: LastName
+            }
+        }
+    });
+
+    authData = data;
+
+    if (authError) {
+        throw new Error("Account creation failed: " + authError.message);
+    }
+
+    if (authData.user) {
+        console.log("Auth user created successfully:", authData.user.id);
+
+        //hash password before storing
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Check if user already exists in the database
+        const { data: existingUser, error: fetchError } = await supabase
+            .from("users")
+            .select("userid")
+            .eq("email", email)
+            .maybeSingle();
+
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            console.error("Error checking existing user:", fetchError);
+            throw new Error("Error checking existing user: " + fetchError.message);
+        }
+
+        if (existingUser) {
+            throw new Error("User already exists with this email");
+        }
+
+        // Try inserting into users table
+        console.log("Attempting to insert user data...");
+        const userData = {
+            auth_id: authData.user.id,
+            username: username,
+            email: email,
+            userfirstName: FirstName,
+            userlastName: LastName,
+            password: hashedPassword,
+            role: 'teenager',
+            privacy_agreement: agreedToPrivacy, 
+            privacy_agreed_at: new Date().toISOString(),
+            active: true
+        };
+
+        console.log("User data to insert:", userData);
+
+        const { error: insertError, data: insertedData } = await supabase
+            .from("users")
+            .insert([userData])
+            .select();
+
+        if (insertError) {
+            console.error("Insert error details:", insertError);
+        }
+
+        console.log("User data inserted successfully:", insertedData);
+
+        // Show success modal and redirect
+        setShowSuccessModal(true);
+        setTimeout(() => {
+            router.push('/', 'forward', 'replace');
+        }, 2000);
+    }
+    } catch (err) {
+        console.error("Registration error:", err);
         
-        const { data: authData, error: authError } = await supabase.auth.signUp({ 
-            email, 
-            password,
-            options: {
-                data: {
-                    username,
-                    userfirstName: FirstName,
-                    userlastName: LastName
-                }
-            }
-        });
-
-        if (authError) {
-            throw new Error("Account creation failed: " + authError.message);
+        // Sign out the auth user if database insert fails
+        if (authData?.user) {
+            console.log("Signing out auth user due to database error...");
+            await supabase.auth.signOut();
         }
-
-        if (authData.user) {
-            //hash password before storing
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-
-            
-            const { error: insertError } = await supabase.from("users")
-                .insert([
-                    {
-                        auth_id: authData.user.id,
-                        username: username,
-                        email: email,
-                        userfirstName: FirstName,
-                        userlastName: LastName,
-                        password: hashedPassword,
-                        role: 'teenager',
-                        privacy_agreement: agreedToPrivacy, 
-                        privacy_agreed_at: new Date().toISOString() 
-                    }
-                ]);
-
-            if (insertError) {
-                throw new Error("Failed to save user data: " + insertError.message);
-            }
-
-            // Show success modal and redirect
-            setShowSuccessModal(true);
-            setTimeout(() => {
-                router.push('/', 'forward', 'replace');
-            }, 2000);
+        
+        if (err instanceof Error) {
+            setErrorMessage(err.message);
+        } else {
+            setErrorMessage('Account creation failed');
         }
-        } catch (err) {
-            if (err instanceof Error) {
-                setErrorMessage(err.message);
-            } else {
-                setErrorMessage('Account creation failed');
-            }
-            setShowAlert(true);
-        }
-    };
+        setShowAlert(true);
+    }
+};
 
     
     
@@ -158,9 +195,6 @@ const Register: React.FC = () => {
                                         >
                                             Create Account
                                         </h1>
-                                        <p style={{ color: '#666', fontSize: '1rem' }}>
-                                            Join us to get started
-                                        </p>
                                     </div>
 
                                     <IonGrid style={{ padding: 0 }}>

@@ -114,7 +114,7 @@ const AuthCallback: React.FC = () => {
         router.push("/home", "root", "replace");
       } else {
         
-        if (userRole === 'teenage') {
+        if (userRole === 'teenager') {
           router.push("/home", "root", "replace");
         } else {
           router.push("/admin", "root", "replace");
