@@ -82,6 +82,7 @@ const AdminHome: React.FC = () => {
         healthworker: [ 
             { name: 'Dashboard', url: '/admin/dashboard', icon: gridOutline }, 
             { name: 'Health Monitoring', url: '/admin/health', icon: readerOutline},
+            { name: 'Profiling', url: '/admin/profiles', icon: peopleOutline },
         ],
         socialworker: [
             { name: 'Dashboard', url: '/admin/dashboard', icon: gridOutline },
